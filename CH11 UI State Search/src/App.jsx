@@ -12,15 +12,21 @@ import {
   toCartView 
 } from './cart';
 
-
 import './App.css';
+
+function isInQuery(query){
+  return function(product){
+    return product.name.includes(query.text); 
+  };
+}
 
 function App() {
   const [products, setProducts] = useState([]);
+  const [query, setQuery] = useState({text: ''});
   const [shoppingMap, setShoppingMap] = useState(initialMap);
 
   function filterProducts(query){
-    console.log(query);
+    setQuery(query)
   }
 
   function addToCart(product) {
@@ -35,6 +41,8 @@ function App() {
     fetchProducts().then(setProducts);
   }, [])
 
+  const filteredProducts = products.filter(isInQuery(query));
+
   return (
     <div>
       <Header />
@@ -43,7 +51,7 @@ function App() {
           <ProductSearch 
             onSearch={filterProducts} />
           <ProductList 
-            products={products} 
+            products={filteredProducts} 
             onAddClick={addToCart} />
         </div>
 
